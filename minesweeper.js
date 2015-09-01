@@ -106,9 +106,9 @@ Field.prototype = {
 	},
 	generateTiles: function() {
 		for (var x=0, l=this.rows; x<l; x++) {
-            this.tiles[x] = [];
-            for (var y=0, j=this.cols; y<j; y++) {
-                if (this.fieldObj[x] && this.fieldObj[x][y]) {
+			this.tiles[x] = [];
+			for (var y=0, j=this.cols; y<j; y++) {
+				if (this.fieldObj[x] && this.fieldObj[x][y]) {
 					this.tiles[x][y] = new Tile(this.fieldObj[x][y])
 				} else {
 					this.tiles[x][y] = new Tile({
@@ -142,8 +142,8 @@ Field.prototype = {
 				$ul.append($li);
 			}
 		}
-        
-        $container.append($ul);
+		
+		$container.append($ul);
 	},
 	init: function() {
 		this.reset();
