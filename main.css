@@ -1,0 +1,56 @@
+.minefield {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+.minefield li {
+    float: left;
+    margin: 0;
+    padding: 0;
+    width: 16px;
+    height: 16px;
+    background-image: url("sprites.png");
+    background-repeat: no-repeat;
+}
+
+.mine {
+    background-position: -87px -53px;
+}
+
+.expander {
+    background-position: -19px -53px;
+}
+
+.number-1 {
+    background-position: -2px -70px;
+}
+
+.number-2 {
+    background-position: -19px -70px;
+}
+
+.number-3 {
+    background-position: -36px -70px;
+}
+
+.number-4 {
+    background-position: -53px -70px;
+}
+
+.number-5 {
+    background-position: -70px -70px;
+}
+
+.number-6 {
+    background-position: -87px -70px;
+}
+
+.number-7 {
+    background-position: -104px -70px;
+}
+
+.number-8 {
+    background-position: -121px -70px;
+}
