@@ -127,9 +127,10 @@ Field.prototype = {
 		}
 	},
 	render: function() {
-		var $container = $(".container");
+		var $container = $(".game-board");
 		var $ul = $("<ul>");
 		var $li, liClassName;
+		var that = this;
 
 		$ul.addClass("minefield").css({
 			width: 16 * this.cols + 8
@@ -141,6 +142,13 @@ Field.prototype = {
 
 		$(".game-window").css({
 			width: 16 * this.cols + 20
+		});
+
+		$container.empty().off("*");
+
+		$(".emote").on("click", function(e){
+			e.preventDefault();
+			that.init();
 		});
 
 		for (var x=0,l=this.rows; x<l; x++) {
@@ -183,4 +191,4 @@ Field.prototype = {
 	}
 }
 
-new Field(60,40).init();
+new Field(50,30).init();
