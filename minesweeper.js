@@ -136,11 +136,26 @@ Field.prototype = {
 					"data-x": x,
 					"data-y": y
 				});
+				this.attachRevealTileEvent($li);
 				$ul.append($li);
 			}
 		}
 		
 		$container.append($ul);
+	},
+	attachRevealTileEvent: function($li) {
+		var that = this;
+		$li.one("click", function(){
+			var x = $(this).attr('data-x');
+			var y = $(this).attr('data-y');
+			var tile = that.tiles[x][y];
+			var className;
+
+			className = tile.type;
+			if (tile.type === "number") className += "-" + tile.number;
+
+			$(this).removeClass("tile").addClass(className); 
+		});
 	},
 	init: function() {
 		this.reset();
