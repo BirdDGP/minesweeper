@@ -1,3 +1,5 @@
+var Game = {};
+
 var Tile = function(options){
 	this.type = options.type; // mines, number, expander
 	this.visible = options.visible; // is it hidden or shown?
@@ -26,6 +28,10 @@ var StatBoard = function(){
 StatBoard.prototype = {
 	resetTime: function(){
 		this.time = 0;
+		this.stopTime();
+		this.renderTime();
+	},
+	stopTime: function(){
 		clearInterval(this.timer);
 	},
 	startCounting: function(){
@@ -49,6 +55,8 @@ StatBoard.prototype = {
 	init: function(){
 		this.resetTime();
 		this.startCounting();
+
+		return this;
 	}
 }
 
@@ -177,9 +185,9 @@ Field.prototype = {
 
 		$container.empty().off("*");
 
-		$(".emote").on("click", function(e){
+		$(".emote").one("click", function(e){
 			e.preventDefault();
-			that.init();
+			$(document).trigger("game:reset");
 		});
 
 		for (var x=0,l=this.rows; x<l; x++) {
@@ -219,8 +227,17 @@ Field.prototype = {
 	init: function() {
 		this.reset();
 		this.render();
+
+		return this;
 	}
 }
 
-new Field(50,30).init();
-new StatBoard().init();
+Game = {
+	Field: new Field(50,30).init(),
+	StatBoard: new StatBoard().init()
+};
+
+$(document).on("game:reset", function(){
+	Game.Field.init();
+	Game.StatBoard.init();
+});
