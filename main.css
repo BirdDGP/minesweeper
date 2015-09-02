@@ -1,9 +1,24 @@
+* {
+    box-sizing: border-box;
+}
+
+.game-window {
+    background-color: #C0C0C0;
+    border: 1px solid #999;
+    padding: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
 .minefield {
     list-style: none;
     margin: 0;
     padding: 0;
     position: relative;
-    border: 1px solid #666;
+    border-top: 4px solid #808080;
+    border-left: 4px solid #808080;
+    border-right: 4px solid #FFF;
+    border-bottom: 4px solid #FFF;
     overflow: hidden;
 }
 
@@ -15,6 +30,59 @@
     height: 16px;
     background-image: url("sprites.png");
     background-repeat: no-repeat;
+}
+
+.stat-board {
+    position: relative;
+    padding: 5px;
+    border-top: 2px solid #808080;
+    border-left: 2px solid #808080;
+    border-right: 2px solid #FFF;
+    border-bottom: 2px solid #FFF;
+    overflow: hidden;
+    background-color: #C0C0C0;
+}
+
+.display {
+    height: 23px;
+    width: 13px;
+    float: left;
+    margin: 0;
+    padding: 0;
+    background-image: url("sprites.png");
+    background-repeat: no-repeat;
+}
+
+.display.number-1 {
+    background-position: -2px -2px;
+}
+
+.display.number-2 {
+    background-position: -16px -2px;
+}
+
+.display.number-3 {
+    background-position: -30px -2px;
+}
+
+.display.number-4 {
+    background-position: -44px -2px;
+}
+
+.display.number-5 {
+    background-position: -58px -2px;
+}
+
+.display.number-6 {
+    background-position: -72px -2px;
+}
+
+.display.number-7 {
+    background-position: -86px -2px;
+}
+
+.display.number-8 {
+    background-position: -100px -2px;
 }
 
 .tile {

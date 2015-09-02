@@ -12,7 +12,13 @@ var Field = function(rows, cols){
 	this.fieldObj = {}; // initial Obj to generate tiles array
 	this.rows = rows; // number of rows
 	this.cols = cols; // number of cols
+	this.tilesLeft = rows * cols;
+	this.minesLeft = 0;
 	this.remainingMines = 0; // number of remaining mines
+}
+
+var StatBoard = function(){
+
 }
 
 Field.prototype = {
@@ -58,7 +64,7 @@ Field.prototype = {
 		var mineCounts = Math.floor(this.rows * this.cols * 0.25);
 		var randomX, randomY;
 
-		this.remainingMines = mineCounts;
+		this.minesLeft = mineCounts;
 
 		do {
 			// randomly assign 0 to max 
@@ -126,7 +132,15 @@ Field.prototype = {
 		var $li, liClassName;
 
 		$ul.addClass("minefield").css({
-			width: 16 * this.cols
+			width: 16 * this.cols + 8
+		});
+
+		$(".stat-board").css({
+			width: 16 * this.cols + 8
+		});
+
+		$(".game-window").css({
+			width: 16 * this.cols + 20
 		});
 
 		for (var x=0,l=this.rows; x<l; x++) {
