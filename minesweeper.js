@@ -4,6 +4,7 @@ var Tile = function(options){
 	this.number = options.number; // number of adjacent mines
 	this.x = options.x; // x coordinate
 	this.y = options.y; // y coordinate
+	this.$el = "";
 }
 
 var Field = function(rows, cols){
@@ -15,35 +16,34 @@ var Field = function(rows, cols){
 }
 
 Field.prototype = {
-	getAdjacentTiles: function(Tile) {
-		var x = Tile.x;
-		var y = Tile.y;
+	forHiddenAdjacentTiles: function(tile, callback) {
+		var x = tile.x;
+		var y = tile.y;
 		var tiles = [];
 		var RangeMinX = (x - 1) < 0 ? 0 : x - 1;
-		var RangeMaxX = (x + 1) > this.rows ? this.rows : x + 1;
+		var RangeMaxX = (x + 1) > (this.rows - 1) ? this.rows - 1 : x + 1;
 		var RangeMinY = (y - 1) < 0 ? 0 : y - 1;
-		var RangeMaxY = (y + 1) > this.cols ? this.cols : y + 1;
-
-		for (var i=RangeMinX, l=RangeMaxX; i<l; i++) {
-			for (var j=RangeMinY, m=RangeMaxY; j<m; j++) {
-				if (i !== x && y !== j) {
-					tiles.push(this.tiles[i][j]);
-				}
-			}
-		}
-
-		return tiles;
-	},
-	forAdjacentObjects: function(Obj, x, y, callback) {
-		var RangeMinX = (x - 1) < 0 ? 0 : x - 1;
-		var RangeMaxX = (x + 1) > this.rows ? this.rows : x + 1;
-		var RangeMinY = (y - 1) < 0 ? 0 : y - 1;
-		var RangeMaxY = (y + 1) > this.cols ? this.cols : y + 1;
+		var RangeMaxY = (y + 1) > (this.cols - 1) ? this.cols - 1 : y + 1;
 
 		for (var i=RangeMinX, l=RangeMaxX; i<=l; i++) {
 			for (var j=RangeMinY, m=RangeMaxY; j<=m; j++) {
 				if (!(i === x && j === y)) {
-					callback(Obj, i, j);
+					// A flag to stop is required, otherwise AdjacentTiles will endlessly call each other.
+					if (!(this.tiles[i][j].visible)) callback.call(this, this.tiles[i][j]);
+				}
+			}
+		}
+	},
+	forAdjacentObjects: function(Obj, x, y, callback) {
+		var RangeMinX = (x - 1) < 0 ? 0 : x - 1;
+		var RangeMaxX = (x + 1) > this.rows - 1  ? this.rows - 1 : x + 1;
+		var RangeMinY = (y - 1) < 0 ? 0 : y - 1;
+		var RangeMaxY = (y + 1) > this.cols - 1 ? this.cols - 1 : y + 1;
+
+		for (var i=RangeMinX, l=RangeMaxX; i<=l; i++) {
+			for (var j=RangeMinY, m=RangeMaxY; j<=m; j++) {
+				if (!(i === x && j === y)) {
+					callback.call(this, Obj, i, j);
 				}
 			}
 		}
@@ -55,7 +55,7 @@ Field.prototype = {
 	},
 	generateMinesAndNumbers: function() {
 		// fill 30% of the Field with mines.
-		var mineCounts = Math.floor(this.rows * this.cols * 0.3);
+		var mineCounts = Math.floor(this.rows * this.cols * 0.25);
 		var randomX, randomY;
 
 		this.remainingMines = mineCounts;
@@ -137,6 +137,7 @@ Field.prototype = {
 					"data-y": y
 				});
 				this.attachRevealTileEvent($li);
+				this.tiles[x][y].$el = $li;
 				$ul.append($li);
 			}
 		}
@@ -151,11 +152,16 @@ Field.prototype = {
 			var tile = that.tiles[x][y];
 			var className;
 
+			tile.visible = true;
 			className = tile.type;
 			if (tile.type === "number") className += "-" + tile.number;
-
-			$(this).removeClass("tile").addClass(className); 
+			$(this).removeClass("tile").addClass(className);
+			that.expandAdjacentTiles.call(that, tile);
 		});
+	},
+	expandAdjacentTiles: function(tile) {
+		if (!tile.visible) tile.$el.trigger("click"); 
+		if (tile.type === "expander") this.forHiddenAdjacentTiles.call(this, tile, this.expandAdjacentTiles);
 	},
 	init: function() {
 		this.reset();
@@ -163,4 +169,4 @@ Field.prototype = {
 	}
 }
 
-new Field(50,40).init();
+new Field(60,40).init();
