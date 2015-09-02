@@ -131,6 +131,14 @@
     background-position: -100px -2px;
 }
 
+.display.number-9 {
+    background-position: -114px -2px;
+}
+
+.display.number-0 {
+    background-position: -128px -2px;
+}
+
 .tile {
     background-position: -2px -53px;
 }

@@ -18,7 +18,38 @@ var Field = function(rows, cols){
 }
 
 var StatBoard = function(){
+	this.time = 0;
+	this.minesLeft = 0;
+	this.timer = "";
+}
 
+StatBoard.prototype = {
+	resetTime: function(){
+		this.time = 0;
+		clearInterval(this.timer);
+	},
+	startCounting: function(){
+		var that = this;
+		that.timer = window.setInterval(function(){
+			that.time += 1;
+			that.renderTime();
+		}, 1000);
+	},
+	renderTime: function(){
+		var timeStringArray = (this.time + "").split("");
+		var $timerContainer = $(".timer");
+		var className = "";
+
+		$timerContainer.empty();
+		for (var i=0, l=timeStringArray.length; i<l; i++) {
+			className = "display number-" + timeStringArray[i];
+			$timerContainer.append($("<div>").addClass(className));
+		}
+	},
+	init: function(){
+		this.resetTime();
+		this.startCounting();
+	}
 }
 
 Field.prototype = {
@@ -192,3 +223,4 @@ Field.prototype = {
 }
 
 new Field(50,30).init();
+new StatBoard().init();
