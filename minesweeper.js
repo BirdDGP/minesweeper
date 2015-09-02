@@ -1,5 +1,3 @@
-// Started at 4:37 PM
-
 var Tile = function(options){
 	this.type = options.type; // mines, number, expander
 	this.visible = options.visible; // is it hidden or shown?
@@ -133,12 +131,11 @@ Field.prototype = {
 
 		for (var x=0,l=this.rows; x<l; x++) {
 			for (var y=0,m=this.cols; y<m; y++) {
-				liClassName = this.tiles[x][y].type;
-
-				if (this.tiles[x][y].type === "number") {
-					liClassName += "-" + this.tiles[x][y].number;
-				}
-				$li = $("<li>").addClass(liClassName);
+				liClassName = "tile";
+				$li = $("<li>").addClass(liClassName).attr({
+					"data-x": x,
+					"data-y": y
+				});
 				$ul.append($li);
 			}
 		}

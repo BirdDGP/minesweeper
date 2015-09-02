@@ -15,6 +15,10 @@
     background-repeat: no-repeat;
 }
 
+.tile {
+    background-position: -2px -53px;
+}
+
 .mine {
     background-position: -87px -53px;
 }
