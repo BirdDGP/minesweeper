@@ -21,15 +21,16 @@ var Field = function(rows, cols){
 
 var StatBoard = function(){
 	this.time = 0;
-	this.minesLeft = 0;
 	this.timer = "";
+	this.timerContainer = $(".display-container.timer");
+	this.mineCounterContainer = $(".display-container.mines-left");
 }
 
 StatBoard.prototype = {
 	resetTime: function(){
 		this.time = 0;
 		this.stopTime();
-		this.renderTime();
+		this.renderNumbers(this.time, this.timerContainer);
 	},
 	stopTime: function(){
 		clearInterval(this.timer);
@@ -38,25 +39,31 @@ StatBoard.prototype = {
 		var that = this;
 		that.timer = window.setInterval(function(){
 			that.time += 1;
-			that.renderTime();
+			that.renderNumbers(that.time, that.timerContainer);
 		}, 1000);
 	},
-	renderTime: function(){
-		var timeStringArray = (this.time + "").split("");
-		var $timerContainer = $(".timer");
+	renderNumbers: function(num, containerEl){
+		var stringArray = (num + "").split("");
+		var $container = containerEl;
 		var className = "";
 
-		$timerContainer.empty();
-		for (var i=0, l=timeStringArray.length; i<l; i++) {
-			className = "display number-" + timeStringArray[i];
-			$timerContainer.append($("<div>").addClass(className));
+		$container.empty();
+		for (var i=0, l=stringArray.length; i<l; i++) {
+			className = "display number-" + stringArray[i];
+			$container.append($("<div>").addClass(className));
 		}
 	},
 	setGameOverIcon: function(){
 		$(".emote").removeClass().addClass("emote dead-face");
 	},
+	setWinIcon: function(){
+		$(".emote").removeClass().addClass("emote win-face");
+	},
 	resetIcon: function(){
 		$(".emote").removeClass().addClass("emote smiley");
+	},
+	setMineCounter: function(num){
+		this.renderNumbers(num, this.mineCounterContainer);
 	},
 	init: function(){
 		this.resetTime();
@@ -67,6 +74,9 @@ StatBoard.prototype = {
 }
 
 Field.prototype = {
+	getMinesLeft: function(){
+		return this.minesLeft;
+	},
 	forHiddenAdjacentTiles: function(tile, callback) {
 		var x = tile.x;
 		var y = tile.y;
@@ -221,9 +231,13 @@ Field.prototype = {
 
 			tile.visible = true;
 			className = tile.type;
+
+			that.tilesLeft--; // decrease tiles left
+			if (that.tilesLeft === that.minesLeft) $(document).trigger("game:win");
+
 			if (tile.type === "number") className += "-" + tile.number;
 			$(this).removeClass("tile").addClass(className);
-			if (tile.type === "mine") $(document).trigger("game:stop");
+			if (tile.type === "mine") $(document).trigger("game:loss");
 			that.expandAdjacentTiles.call(that, tile);
 		});
 	},
@@ -246,15 +260,22 @@ Game = {
 	Field: new Field(50,30).init(),
 	StatBoard: new StatBoard().init()
 };
+Game.StatBoard.setMineCounter(Game.Field.getMinesLeft());
 
-$(document).on("game:reset", function(){
-	Game.StatBoard.resetIcon();
-	Game.Field.init();
-	Game.StatBoard.init();
-});
-
-$(document).on("game:stop", function(){
-	Game.Field.detachAllTileEvents();
-	Game.StatBoard.stopTime();
-	Game.StatBoard.setGameOverIcon();
-});
+$(document)
+	.on("game:reset", function(){
+		Game.StatBoard.resetIcon();
+		Game.Field.init();
+		Game.StatBoard.init();
+		Game.StatBoard.setMineCounter(Game.Field.getMinesLeft());
+	})
+	.on("game:loss", function(){
+		Game.Field.detachAllTileEvents();
+		Game.StatBoard.stopTime();
+		Game.StatBoard.setGameOverIcon();
+	})
+	.on("game:win", function(){
+		Game.Field.detachAllTileEvents();
+		Game.StatBoard.stopTime();
+		Game.StatBoard.setWinIcon();
+	});

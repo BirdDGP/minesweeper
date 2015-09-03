@@ -27,6 +27,10 @@
     background-position: -110px -26px;
 }
 
+.win-face {
+    background-position: -83px -26px;
+}
+
 .display-container {
     border-top: 1px solid #808080;
     border-left: 1px solid #808080;
