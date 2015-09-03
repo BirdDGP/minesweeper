@@ -23,8 +23,8 @@
     background-position: -2px -26px;
 }
 
-.smiley:hover {
-    background-position: -29px -26px;
+.dead-face {
+    background-position: -110px -26px;
 }
 
 .display-container {
@@ -144,7 +144,7 @@
 }
 
 .mine {
-    background-position: -87px -53px;
+    background-position: -104px -53px;
 }
 
 .expander {

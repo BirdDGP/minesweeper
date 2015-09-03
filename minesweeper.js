@@ -52,6 +52,12 @@ StatBoard.prototype = {
 			$timerContainer.append($("<div>").addClass(className));
 		}
 	},
+	setGameOverIcon: function(){
+		$(".emote").removeClass().addClass("emote dead-face");
+	},
+	resetIcon: function(){
+		$(".emote").removeClass().addClass("emote smiley");
+	},
 	init: function(){
 		this.resetTime();
 		this.startCounting();
@@ -217,8 +223,12 @@ Field.prototype = {
 			className = tile.type;
 			if (tile.type === "number") className += "-" + tile.number;
 			$(this).removeClass("tile").addClass(className);
+			if (tile.type === "mine") $(document).trigger("game:stop");
 			that.expandAdjacentTiles.call(that, tile);
 		});
+	},
+	detachAllTileEvents: function(){
+		$(".game-board ul li").off("click");
 	},
 	expandAdjacentTiles: function(tile) {
 		if (!tile.visible) tile.$el.trigger("click"); 
@@ -238,6 +248,13 @@ Game = {
 };
 
 $(document).on("game:reset", function(){
+	Game.StatBoard.resetIcon();
 	Game.Field.init();
 	Game.StatBoard.init();
+});
+
+$(document).on("game:stop", function(){
+	Game.Field.detachAllTileEvents();
+	Game.StatBoard.stopTime();
+	Game.StatBoard.setGameOverIcon();
 });
